@@ -1,0 +1,96 @@
+<footer class="login-footer">
+  <!-- Wave Background -->
+  <div class="footer-wave"></div>
+
+  <!-- Main Footer Content -->
+  <div class="footer-content">
+    <div class="footer-container">
+      <!-- Brand Section -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-icon">🍽️</span>
+          <h3>DineDesk</h3>
+        </div>
+        <p class="footer-description">
+          Modern restaurant management system for efficient operations and better customer experience.
+        </p>
+        <div class="social-links">
+          <a *ngFor="let link of socialLinks" 
+             [href]="link.href" 
+             class="social-link"
+             [title]="link.label">
+            {{ link.icon }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Links Sections -->
+      <div class="footer-links-group">
+        <!-- Product Links -->
+        <div class="link-section">
+          <h4>Product</h4>
+          <ul>
+            <li *ngFor="let link of productLinks">
+              <a [href]="link.href" class="footer-link">{{ link.label }}</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Company Links -->
+        <div class="link-section">
+          <h4>Company</h4>
+          <ul>
+            <li *ngFor="let link of companyLinks">
+              <a [href]="link.href" class="footer-link">{{ link.label }}</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Legal Links -->
+        <div class="link-section">
+          <h4>Legal</h4>
+          <ul>
+            <li *ngFor="let link of legalLinks">
+              <a [href]="link.href" class="footer-link">{{ link.label }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Newsletter Section -->
+      <div class="newsletter-section">
+        <h4>Stay Updated</h4>
+        <p>Get the latest updates delivered to your inbox.</p>
+        <form class="newsletter-form" (submit)="$event.preventDefault()">
+          <input 
+            type="email" 
+            placeholder="Enter your email"
+            class="newsletter-input"
+            required
+          />
+          <button type="submit" class="newsletter-btn">Subscribe</button>
+        </form>
+        <p class="newsletter-note">We respect your privacy. Unsubscribe at any time.</p>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="footer-divider"></div>
+
+    <!-- Bottom Section -->
+    <div class="footer-bottom">
+      <div class="footer-container">
+        <p class="copyright">
+          &copy; {{ currentYear }} DineDesk. All rights reserved.
+        </p>
+        <div class="footer-bottom-links">
+          <a href="#privacy" class="bottom-link">Privacy</a>
+          <span class="divider">•</span>
+          <a href="#terms" class="bottom-link">Terms</a>
+          <span class="divider">•</span>
+          <a href="#sitemap" class="bottom-link">Sitemap</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

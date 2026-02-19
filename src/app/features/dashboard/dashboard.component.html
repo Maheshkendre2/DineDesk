@@ -1,0 +1,96 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<main class="main-content">
+  <div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Welcome back! Here's what's happening in your restaurant today.</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-secondary">📅 Today</button>
+        <button class="btn-primary">+ New Order</button>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-section">
+      <div class="summary-grid">
+        <div *ngFor="let card of summaryCards" class="summary-card" [style.--card-color]="card.color">
+          <div class="card-header">
+            <h3>{{ card.title }}</h3>
+            <span class="card-icon">{{ card.icon }}</span>
+          </div>
+          <div class="card-value">{{ card.value }}</div>
+          <div class="card-footer" *ngIf="card.trend">
+            <span [ngClass]="getTrendClass(card.trend)">
+              <span *ngIf="card.trend > 0">📈</span>
+              <span *ngIf="card.trend < 0">📉</span>
+              {{ card.trend > 0 ? '+' : '' }}{{ card.trend }}%
+            </span>
+            <span class="trend-label">vs last week</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Orders Section -->
+    <div class="recent-orders-section">
+      <div class="section-header">
+        <h2>Recent Orders</h2>
+        <a href="#" class="view-all">View All →</a>
+      </div>
+
+      <div class="orders-table-wrapper">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Table</th>
+              <th>Items</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of recentOrders" class="order-row">
+              <td class="order-id">{{ order.id }}</td>
+              <td>{{ order.table }}</td>
+              <td class="order-items">{{ order.items }}</td>
+              <td class="order-amount">{{ order.amount }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+                  {{ order.status | titlecase }}
+                </span>
+              </td>
+              <td class="order-time">{{ order.time }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="quick-stats">
+      <div class="stat-item">
+        <h4>Average Order Value</h4>
+        <p class="stat-value">₹523</p>
+      </div>
+      <div class="stat-item">
+        <h4>Orders per Hour</h4>
+        <p class="stat-value">18</p>
+      </div>
+      <div class="stat-item">
+        <h4>Customer Satisfaction</h4>
+        <p class="stat-value">4.8/5 ⭐</p>
+      </div>
+      <div class="stat-item">
+        <h4>Avg Prep Time</h4>
+        <p class="stat-value">12 min</p>
+      </div>
+    </div>
+  </div>
+</main>

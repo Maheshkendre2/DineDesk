@@ -1,0 +1,37 @@
+<header class="header">
+  <div class="header-container">
+    <!-- Logo -->
+    <div class="logo">
+      <span class="logo-icon">🍽️</span>
+      <span class="logo-text">DineDesk</span>
+    </div>
+
+    <!-- User Menu -->
+    <div class="user-section">
+      <div class="user-menu-wrapper" *ngIf="currentUser$ | async as user">
+        <button class="user-btn" (click)="toggleUserMenu()">
+          <span class="user-avatar">{{ user.name.charAt(0).toUpperCase() }}</span>
+          <span class="user-info">
+            <span class="user-name">{{ user.name }}</span>
+            <span class="user-role">{{ user.role | titlecase }}</span>
+          </span>
+          <span class="dropdown-icon">▼</span>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" *ngIf="showUserMenu">
+          <button class="dropdown-item" routerLink="/profile">
+            <span class="icon">👤</span> Profile
+          </button>
+          <button class="dropdown-item" routerLink="/settings">
+            <span class="icon">⚙️</span> Settings
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item logout" (click)="logout()">
+            <span class="icon">🚪</span> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

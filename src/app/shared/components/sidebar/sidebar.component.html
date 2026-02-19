@@ -1,0 +1,27 @@
+<aside class="sidebar" [class.closed]="!isOpen">
+  <div class="sidebar-header">
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <span *ngIf="isOpen">◀</span>
+      <span *ngIf="!isOpen">▶</span>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav" *ngIf="currentUser$ | async as user">
+    <div class="nav-section">
+      <h3 class="nav-title" *ngIf="isOpen">Menu</h3>
+      <ul class="nav-list">
+        <li *ngFor="let item of getVisibleMenuItems(user.role)">
+          <a 
+            [routerLink]="item.route" 
+            [class.active]="isActive(item.route)"
+            class="nav-link"
+            [title]="item.label"
+          >
+            <span class="nav-icon">{{ item.icon }}</span>
+            <span class="nav-label" *ngIf="isOpen">{{ item.label }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</aside>
