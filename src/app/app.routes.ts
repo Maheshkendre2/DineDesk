@@ -3,6 +3,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { LoginComponent } from './features/auth/login/login.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { MenuListComponent } from './features/menu/menu-list/menu-list.component';
+import { MenuFormComponent } from './features/menu/menu-form/menu-form.component';
 import { OrderListComponent } from './features/orders/order-list/order-list.component';
 import { TableListComponent } from './features/tables/table-list/table-list.component';
 import { KitchenBoardComponent } from './features/kitchen/kitchen-board/kitchen-board.component';
@@ -24,6 +25,18 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['admin'] },
     component: MenuListComponent
+  },
+  {
+    path: 'menu/add',
+    canActivate: [AuthGuard],
+    data: { roles: ['admin'] },
+    component: MenuFormComponent
+  },
+  {
+    path: 'menu/edit/:id',
+    canActivate: [AuthGuard],
+    data: { roles: ['admin'] },
+    component: MenuFormComponent
   },
   {
     path: 'orders',

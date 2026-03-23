@@ -1,0 +1,216 @@
+<div class="form-container">
+  <!-- Form Header -->
+  <div class="form-header">
+    <h1>{{ isEditMode ? '✏️ Edit Menu Item' : '➕ Add New Menu Item' }}</h1>
+    <p class="subtitle">
+      {{ isEditMode ? 'Update menu item details' : 'Create a new menu item for your restaurant' }}
+    </p>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="submitError" class="alert alert-error">
+    <span>⚠️</span>
+    <p>{{ submitError }}</p>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="menuForm" (ngSubmit)="onSubmit()" class="menu-form">
+    <!-- Basic Information -->
+    <fieldset class="form-section">
+      <legend>📝 Basic Information</legend>
+
+      <!-- Name -->
+      <div class="form-group">
+        <label for="name">Item Name *</label>
+        <input
+          id="name"
+          type="text"
+          class="form-control"
+          [class.error]="hasError('name', 'required') || hasError('name', 'minlength')"
+          formControlName="name"
+          placeholder="e.g., Caesar Salad"
+        />
+        <span class="error-message" *ngIf="hasError('name', 'required') || hasError('name', 'minlength')">
+          {{ getErrorMessage('name') }}
+        </span>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <textarea
+          id="description"
+          class="form-control textarea"
+          [class.error]="hasError('description', 'required') || hasError('description', 'minlength')"
+          formControlName="description"
+          placeholder="e.g., Fresh romaine with parmesan and homemade croutons"
+          rows="4"
+        ></textarea>
+        <span class="character-count">
+          {{ menuForm.get('description')?.value.length || 0 }} / 500
+        </span>
+        <span class="error-message" *ngIf="hasError('description', 'required') || hasError('description', 'minlength')">
+          {{ getErrorMessage('description') }}
+        </span>
+      </div>
+    </fieldset>
+
+    <!-- Pricing & Category -->
+    <fieldset class="form-section">
+      <legend>💰 Pricing & Category</legend>
+
+      <div class="form-row">
+        <!-- Price -->
+        <div class="form-group">
+          <label for="price">Price (USD) *</label>
+          <div class="input-group">
+            <span class="input-prefix">$</span>
+            <input
+              id="price"
+              type="number"
+              class="form-control"
+              [class.error]="hasError('price', 'required') || hasError('price', 'min')"
+              formControlName="price"
+              placeholder="0.00"
+              step="0.01"
+              min="0"
+            />
+          </div>
+          <span class="error-message" *ngIf="hasError('price', 'required') || hasError('price', 'min')">
+            {{ getErrorMessage('price') }}
+          </span>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+          <label for="category">Category *</label>
+          <select
+            id="category"
+            class="form-control"
+            [class.error]="hasError('category', 'required')"
+            formControlName="category"
+          >
+            <option value="">Select a category</option>
+            <option *ngFor="let cat of categories$ | async" [value]="cat.id">
+              {{ cat.icon }} {{ cat.name }}
+            </option>
+          </select>
+          <span class="error-message" *ngIf="hasError('category', 'required')">
+            {{ getErrorMessage('category') }}
+          </span>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Preparation & Attributes -->
+    <fieldset class="form-section">
+      <legend>⏱️ Preparation & Attributes</legend>
+
+      <div class="form-row">
+        <!-- Preparation Time -->
+        <div class="form-group">
+          <label for="preparationTime">Preparation Time (minutes) *</label>
+          <input
+            id="preparationTime"
+            type="number"
+            class="form-control"
+            [class.error]="hasError('preparationTime', 'required') || hasError('preparationTime', 'min')"
+            formControlName="preparationTime"
+            placeholder="15"
+            min="1"
+            max="120"
+          />
+          <span class="error-message" *ngIf="hasError('preparationTime', 'required') || hasError('preparationTime', 'min')">
+            {{ getErrorMessage('preparationTime') }}
+          </span>
+        </div>
+
+        <!-- Availability -->
+        <div class="form-group checkbox-group">
+          <label for="available">
+            <input
+              id="available"
+              type="checkbox"
+              formControlName="available"
+              class="checkbox-input"
+            />
+            <span>Available</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Dietary Attributes -->
+      <div class="form-row checkbox-row">
+        <div class="form-group checkbox-group">
+          <label for="vegetarian">
+            <input
+              id="vegetarian"
+              type="checkbox"
+              formControlName="vegetarian"
+              class="checkbox-input"
+            />
+            <span>🥗 Vegetarian</span>
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label for="spicy">
+            <input
+              id="spicy"
+              type="checkbox"
+              formControlName="spicy"
+              class="checkbox-input"
+            />
+            <span>🌶️ Spicy</span>
+          </label>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Image -->
+    <fieldset class="form-section">
+      <legend>🖼️ Image URL (Optional)</legend>
+
+      <div class="form-group">
+        <label for="image">Image URL</label>
+        <input
+          id="image"
+          type="text"
+          class="form-control"
+          formControlName="image"
+          placeholder="https://example.com/image.jpg"
+        />
+        <span class="help-text">Provide a direct link to the item image</span>
+      </div>
+    </fieldset>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="menuForm.invalid || isSubmitting"
+      >
+        {{ isSubmitting ? '⏳ Saving...' : (isEditMode ? '💾 Update Item' : '➕ Create Item') }}
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="resetForm()"
+        [disabled]="isSubmitting"
+      >
+        🔄 Reset
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="cancel()"
+        [disabled]="isSubmitting"
+      >
+        ✕ Cancel
+      </button>
+    </div>
+  </form>
+</div>

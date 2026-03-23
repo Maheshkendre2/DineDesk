@@ -1,2 +1,144 @@
-<!-- Menu List page - Junior dev will design this -->
-<div class="menu-list-placeholder">Menu List works!</div>
+<div class="menu-container">
+  <!-- Header -->
+  <div class="menu-header">
+    <div class="header-content">
+      <h1>🍽️ Menu Management</h1>
+      <p class="subtitle">Browse and manage restaurant menu items</p>
+    </div>
+    <button class="btn btn-primary" [routerLink]="['/menu/add']">
+      ➕ Add New Item
+    </button>
+  </div>
+
+  <!-- Controls Bar -->
+  <div class="controls-bar">
+    <!-- Search -->
+    <div class="search-container">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="🔍 Search menu items..."
+        [value]="searchTerm"
+        (input)="onSearch($event)"
+      />
+      <button
+        *ngIf="searchTerm"
+        class="btn-clear"
+        (click)="clearSearch()"
+        title="Clear search"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Category Filter -->
+    <select class="filter-select" (change)="filterByCategory($event)">
+      <option value="">📂 All Categories</option>
+      <option *ngFor="let cat of categories$ | async; trackBy: trackByCategoryId" [value]="cat.id">
+        {{ cat.icon }} {{ cat.name }}
+      </option>
+    </select>
+
+    <!-- Sort -->
+    <select class="sort-select" (change)="changeSortBy($event)">
+      <option value="name">📝 Sort by Name</option>
+      <option value="price">💰 Sort by Price</option>
+      <option value="time">⏱️ Sort by Time</option>
+    </select>
+
+    <!-- View Toggle -->
+    <button class="btn-toggle-view" (click)="toggleViewMode()" [title]="'Switch to ' + (viewMode === 'grid' ? 'list' : 'grid') + ' view'">
+      {{ viewMode === 'grid' ? '📋' : '📊' }}
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Loading menu items...</p>
+  </div>
+
+  <!-- Menu Items Grid -->
+  <div *ngIf="!isLoading && (menuItems$ | async) as items" [ngClass]="'menu-' + viewMode">
+    <div *ngIf="items.length === 0" class="empty-state">
+      <p>😔 No menu items found</p>
+      <p class="empty-subtitle">Try adjusting your search or filters</p>
+    </div>
+
+    <!-- Grid View -->
+    <div *ngIf="viewMode === 'grid'" class="items-grid">
+      <div *ngFor="let item of items; trackBy: trackByItemId" class="menu-card">
+        <div class="card-header" [class.unavailable]="!item.available">
+          <img
+            *ngIf="item.image"
+            [src]="item.image"
+            [alt]="item.name"
+            class="item-image"
+          />
+          <div *ngIf="!item.image" class="image-placeholder">🍽️</div>
+
+          <div class="card-badges">
+            <span *ngIf="item.vegetarian" class="badge badge-vegetarian" title="Vegetarian">🥗</span>
+            <span *ngIf="item.spicy" class="badge badge-spicy" title="Spicy">🌶️</span>
+            <span *ngIf="!item.available" class="badge badge-unavailable">Out of Stock</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <h3 class="item-name">{{ item.name }}</h3>
+          <p class="item-description">{{ item.description }}</p>
+
+          <div class="item-meta">
+            <span class="category-tag">{{ item.categoryName }}</span>
+            <span class="time-tag">⏱️ {{ getTimeLabel(item.preparationTime) }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="price">{{ formatPrice(item.price) }}</div>
+          <div class="actions">
+            <button class="btn-icon" [routerLink]="['/menu/edit', item.id]" title="Edit">✏️</button>
+            <button class="btn-icon btn-delete" (click)="deleteItem(item.id, $event)" title="Delete">🗑️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- List View -->
+    <div *ngIf="viewMode === 'list'" class="items-list">
+      <table class="menu-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items; trackBy: trackByItemId" [class.unavailable]="!item.available">
+            <td class="name-cell">
+              <span class="vegetarian-indicator" *ngIf="item.vegetarian">🥗</span>
+              <span class="spicy-indicator" *ngIf="item.spicy">🌶️</span>
+              {{ item.name }}
+            </td>
+            <td>{{ item.categoryName }}</td>
+            <td class="price-cell">{{ formatPrice(item.price) }}</td>
+            <td class="time-cell">{{ getTimeLabel(item.preparationTime) }}</td>
+            <td class="status-cell">
+              <span class="status-badge" [class.available]="item.available" [class.unavailable]="!item.available">
+                {{ item.available ? '✓ Available' : '✕ Out of Stock' }}
+              </span>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-icon" [routerLink]="['/menu/edit', item.id]" title="Edit">✏️</button>
+              <button class="btn-icon btn-delete" (click)="deleteItem(item.id, $event)" title="Delete">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
