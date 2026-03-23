@@ -4,6 +4,7 @@ export interface User {
   password?: string;
   role: 'admin' | 'waiter' | 'chef' | 'cashier';
   name: string;
+  token?: string;
 }
 
 export interface LoginRequest {
